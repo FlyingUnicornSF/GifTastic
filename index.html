@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GifTaaaassstic</title>
+</head>
+
+<body>
+    <form id="more-dogs">
+        <label for="dog-input">Add a dog breed</label>
+        <input type="text" id="dog-input">
+        <br>
+        <!-- Button triggers new dog to be added -->
+        <input id="add-dog" type="submit" value="add">
+    </form>
+    <hr>
+    <div id="buttons-container"></div>
+    <div id="images"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+        var topics = ["Labrador", "Golden Retriever", "bulldog", "poodle", "french bulldog", "pomeranian", "shar pei"];
+
+        //  load added dog breed
+
+        $("#add-dog").on("click", function(event) {
+            event.preventDefault();
+            var dog = $("#dog-input").val().trim();
+            // I had to add this due to me keep clicking on add without anything and wonder what went wrong
+            if (!dog) {
+                alert("enter something!")
+                return
+            }
+            topics.push(dog);
+            renderButtons();
+            $("#dog-input").val("");
+        });
+
+        renderButtons();
+
+        // load buttons 
+        function renderButtons() {
+            $("#buttons-container").empty();
+            topics.forEach(function(item) {
+
+                var youAnimal = $("<button>");
+                youAnimal.addClass("youAnimal");
+                youAnimal.attr("data-value", item);
+                youAnimal.text(item);
+                $("#buttons-container").append(youAnimal);
+            });
+        }
+
+        // load images on click  
+        $("#buttons-container").on("click", ".youAnimal", function() {
+
+            $("#images").empty();
+
+            var breed = $(this).attr("data-value");
+            //
+            var queryURL = "http://api.giphy.com/v1/gifs/search?api_key=65cbf02cf7e24b179387fee912871cbf&q=" + breed + "&limit=10";
+
+            //
+            $.get(queryURL).done(function(response) {
+
+                var results = response.data;
+                // Looping through each result item
+                results.forEach(function(item) {
+
+                    var animalDiv = $("<div>");
+                    animalDiv.attr("style", "display:inline-block; margin:2em;");
+                    $("#images").append(animalDiv);
+
+                    // Creating a paragraph tag with the result item's rating
+                    var p = $("<p>").text("Rating: " + item.rating);
+                    // setting still animate src url
+
+                    // Creating and storing an image tag
+                    var animalImage = $("<img>");
+                    // Setting the src attribute of the image to a property pulled off the result item
+                    animalImage.attr("src", item.images.fixed_width_still.url);
+                    animalImage.attr("data-still", item.images.fixed_width_still.url);
+                    animalImage.attr("data-animate", item.images.fixed_width.url);
+
+                    animalImage.attr("data-state", "still");
+                    animalImage.addClass("gif")
+                    // Appending the paragraph and image tag to the animalDiv
+                    animalDiv.append(p);
+                    animalDiv.append(animalImage);
+
+                }); //closing for teach
+            }); // closing .done 
+        }); // closing .onclick
+
+        $("#images").on("click", ".gif", function() {
+            console.log("I'm in gif on click")
+            var currentState = $(this).attr("data-state");
+            var newState = (currentState == "still") ? "animate" : "still"
+            var imageUrl = $(this).attr("data-" + newState)
+            $(this).attr("src", imageUrl);
+            $(this).attr("data-state", newState);
+        }); // closing on on click gif  
+
+
+    }); // closing .ready
+    </script>
+</body>
+
+</html>
