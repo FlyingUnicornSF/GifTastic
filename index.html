@@ -60,7 +60,7 @@
 
             var breed = $(this).attr("data-value");
             //
-            var queryURL = "http://api.giphy.com/v1/gifs/search?api_key=65cbf02cf7e24b179387fee912871cbf&q=" + breed + "&limit=10";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=65cbf02cf7e24b179387fee912871cbf&q=" + breed + "&limit=10";
 
             //
             $.get(queryURL).done(function(response) {
@@ -95,7 +95,6 @@
         }); // closing .onclick
 
         $("#images").on("click", ".gif", function() {
-            console.log("I'm in gif on click")
             var currentState = $(this).attr("data-state");
             var newState = (currentState == "still") ? "animate" : "still"
             var imageUrl = $(this).attr("data-" + newState)
