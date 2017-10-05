@@ -18,7 +18,18 @@
     <div id="buttons-container"></div>
     <div id="images"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!--
+        I'd recommend moving your javascript into an external file. 
+        While it doesn't make a functional difference, it's still 
+        good to get into the habit of separating your concerns as
+        this will become useful to the point necessary as your
+        applications grow in size.
+    -->
+
     <script type="text/javascript">
+
+    // Nice job putting your code inside a document.ready block 👌
     $(document).ready(function() {
 
         var topics = ["Labrador", "Golden Retriever", "bulldog", "poodle", "french bulldog", "pomeranian", "shar pei"];
@@ -29,6 +40,7 @@
             event.preventDefault();
             var dog = $("#dog-input").val().trim();
             // I had to add this due to me keep clicking on add without anything and wonder what went wrong
+            // Right on - it's always a good idea to validate user input!
             if (!dog) {
                 alert("enter something!")
                 return
@@ -60,6 +72,7 @@
 
             var breed = $(this).attr("data-value");
             //
+            // I'm curious as to what you were going to put in the commented out line above 🤔
             var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=65cbf02cf7e24b179387fee912871cbf&q=" + breed + "&limit=10";
 
             //
@@ -90,12 +103,17 @@
                     animalDiv.append(p);
                     animalDiv.append(animalImage);
 
-                }); //closing for teach
+                }); //closing for teach <-- I think you meant `for each`
             }); // closing .done 
         }); // closing .onclick
 
         $("#images").on("click", ".gif", function() {
             var currentState = $(this).attr("data-state");
+            // I'd recommend you get in the habit of using strict equality checking as 
+            // opposed to type coercion checking (eg `===` vs `==`). While it often
+            // doesn't make a difference, there are a lot of people who don't understand
+            // the difference and that lack of understanding can lead to some very
+            // finnicky bugs 🐛
             var newState = (currentState == "still") ? "animate" : "still"
             var imageUrl = $(this).attr("data-" + newState)
             $(this).attr("src", imageUrl);
